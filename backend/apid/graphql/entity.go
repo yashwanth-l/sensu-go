@@ -1,6 +1,8 @@
 package graphql
 
 import (
+	"time"
+
 	"github.com/sensu/sensu-go/backend/apid/actions"
 	"github.com/sensu/sensu-go/backend/apid/graphql/globalid"
 	"github.com/sensu/sensu-go/backend/apid/graphql/schema"
@@ -56,6 +58,12 @@ func (r *entityImpl) Author(p graphql.ResolveParams) (interface{}, error) {
 	entity := p.Source.(*types.Entity)
 	user, err := r.userCtrl.Find(p.Context, entity.User)
 	return handleControllerResults(user, err)
+}
+
+// Timestamp implements response to request for 'timestamp' field.
+func (r *entityImpl) LastSeen(p graphql.ResolveParams) (time.Time, error) {
+	entity := p.Source.(*types.Entity)
+	return time.Unix(entity.LastSeen, 0), nil
 }
 
 // IsTypeOf is used to determine if a given value is associated with the type

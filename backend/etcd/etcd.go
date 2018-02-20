@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/coreos/etcd/clientv3"
+	"github.com/coreos/etcd/compactor"
 	"github.com/coreos/etcd/embed"
 	"github.com/coreos/etcd/pkg/transport"
 	"github.com/coreos/pkg/capnslog"
@@ -191,6 +192,8 @@ func NewEtcd(config *Config) (*Etcd, error) {
 	cfg.InitialClusterToken = config.InitialClusterToken
 	cfg.InitialCluster = config.InitialCluster
 	cfg.ClusterState = config.InitialClusterState
+	cfg.AutoCompactionRetention = "5m"
+	cfg.AutoCompactionMode = compactor.ModePeriodic
 
 	if config.TLSConfig != nil {
 		cfg.ClientTLSInfo = (transport.TLSInfo)(config.TLSConfig.Info)

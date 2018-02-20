@@ -6,6 +6,7 @@ import (
 	fmt "fmt"
 	graphql1 "github.com/graphql-go/graphql"
 	graphql "github.com/sensu/sensu-go/graphql"
+	time "time"
 )
 
 // EntityIDFieldResolver implement to resolve requests for the Entity's id field.
@@ -47,7 +48,7 @@ type EntitySubscriptionsFieldResolver interface {
 // EntityLastSeenFieldResolver implement to resolve requests for the Entity's lastSeen field.
 type EntityLastSeenFieldResolver interface {
 	// LastSeen implements response to request for lastSeen field.
-	LastSeen(p graphql.ResolveParams) (int, error)
+	LastSeen(p graphql.ResolveParams) (time.Time, error)
 }
 
 // EntityDeregisterFieldResolver implement to resolve requests for the Entity's deregister field.
@@ -243,9 +244,9 @@ func (_ EntityAliases) Subscriptions(p graphql.ResolveParams) ([]string, error) 
 }
 
 // LastSeen implements response to request for 'lastSeen' field.
-func (_ EntityAliases) LastSeen(p graphql.ResolveParams) (int, error) {
+func (_ EntityAliases) LastSeen(p graphql.ResolveParams) (time.Time, error) {
 	val, err := graphql.DefaultResolver(p.Source, p.Info.FieldName)
-	ret := graphql1.Int.ParseValue(val).(int)
+	ret := val.(time.Time)
 	return ret, err
 }
 
@@ -434,7 +435,7 @@ func _ObjectTypeEntityConfigFn() graphql1.ObjectConfig {
 				DeprecationReason: "",
 				Description:       "self descriptive",
 				Name:              "lastSeen",
-				Type:              graphql1.Int,
+				Type:              graphql1.DateTime,
 			},
 			"name": &graphql1.Field{
 				Args:              graphql1.FieldConfigArgument{},

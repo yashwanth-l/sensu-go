@@ -5,6 +5,7 @@ import AppWrapper from "./components/AppWrapper";
 import LoginPage from "./pages/Login";
 import EventsPage from "./pages/EventsPage";
 import ChecksPage from "./pages/ChecksPage";
+import EntitiesPage from "./pages/EntitiesPage";
 
 export default makeRouteConfig(
   <Route>
@@ -22,6 +23,11 @@ export default makeRouteConfig(
         prepareVariables={(_, route) => route.location.query}
       />
       <Route path="checks" Component={ChecksPage} query={ChecksPage.query} />
+      <Route
+        path="entities"
+        Component={EntitiesPage}
+        query={EntitiesPage.query}
+      />
       <Redirect from="dashboard" to="" />
     </Route>
   </Route>,

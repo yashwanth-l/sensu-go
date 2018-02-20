@@ -1,0 +1,133 @@
+version: '3'
+services:
+  backend:
+    image: sensuapp/sensu-go:master
+    command: sensu-backend start --store-client-url http://0.0.0.0:2379 --state-dir /sensu
+    hostname: sensu-backend
+    restart: always
+    volumes:
+      - /private/var/lib/sensu:/sensu
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+      - "8080:8080"
+      - "8081:8081"
+  agent-dean-learner:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix
+    hostname: dean-learner
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-marxist:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,postgresql --id marxist
+    hostname: marxist
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-banana:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions windows --id banana
+    hostname: banana
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-archer:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,riak --id archer
+    hostname: archer
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-terror-lake:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,redis --id terror-lake
+    hostname: terror-lake
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-ice-cream-ville:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,memcached --id ice-cream-ville
+    hostname: ice-cream-ville
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-screams-ville:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,cassandra --id screams-ville
+    hostname: screams-ville
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-cool-cat:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,couchdb --id cool-cat
+    hostname: cool-cat
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-dear:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,hadoop --id dear
+    hostname: dear
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-bond:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,myapp --id bond
+    hostname: bond
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-owner:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,redis --id owner
+    hostname: owner
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-our:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,redis --id our
+    hostname: our
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-records:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,dog --id records
+    hostname: records
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-indicate:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,redis --id indicate
+    hostname: indicate
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-that:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,postgresql --id that
+    hostname: that
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-in:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,kafka --id in
+    hostname: in
+    restart: always
+    links:
+      - backend:sensu-backend
+  agent-september:
+    image: sensuapp/sensu-go:master
+    command: sensu-agent start --backend-url ws://sensu-backend:8081 --subscriptions unix,kafka --id september
+    hostname: september
+    restart: always
+    links:
+      - backend:sensu-backend

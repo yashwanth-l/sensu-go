@@ -18,7 +18,7 @@ func TestNewEventController(t *testing.T) {
 
 	store := &mockstore.MockStore{}
 	bus := &mockbus.MockBus{}
-	eventController := NewEventController(store, bus)
+	eventController := eventAdapter{Store: store, Bus: bus}
 
 	assert.NotNil(eventController)
 	assert.Equal(store, eventController.Store)
@@ -98,7 +98,7 @@ func TestEventQuery(t *testing.T) {
 	for _, tc := range testCases {
 		store := &mockstore.MockStore{}
 		bus := &mockbus.MockBus{}
-		eventController := NewEventController(store, bus)
+		eventController := eventAdapter{Store: store, Bus: bus}
 
 		t.Run(tc.name, func(t *testing.T) {
 			assert := assert.New(t)
@@ -185,7 +185,7 @@ func TestEventFind(t *testing.T) {
 	for _, tc := range testCases {
 		store := &mockstore.MockStore{}
 		bus := &mockbus.MockBus{}
-		eventController := NewEventController(store, bus)
+		eventController := eventAdapter{Store: store, Bus: bus}
 
 		t.Run(tc.name, func(t *testing.T) {
 			assert := assert.New(t)
@@ -270,7 +270,7 @@ func TestEventDestroy(t *testing.T) {
 	for _, tc := range testCases {
 		store := &mockstore.MockStore{}
 		bus := &mockbus.MockBus{}
-		eventController := NewEventController(store, bus)
+		eventController := eventAdapter{Store: store, Bus: bus}
 
 		t.Run(tc.name, func(t *testing.T) {
 			assert := assert.New(t)
@@ -375,7 +375,7 @@ func TestEventUpdate(t *testing.T) {
 	for _, tc := range testCases {
 		store := &mockstore.MockStore{}
 		bus := &mockbus.MockBus{}
-		actions := NewEventController(store, bus)
+		actions := eventAdapter{Store: store, Bus: bus}
 
 		t.Run(tc.name, func(t *testing.T) {
 			assert := assert.New(t)
@@ -479,7 +479,7 @@ func TestEventCreate(t *testing.T) {
 	for _, tc := range testCases {
 		store := &mockstore.MockStore{}
 		bus := &mockbus.MockBus{}
-		actions := NewEventController(store, bus)
+		actions := eventAdapter{Store: store, Bus: bus}
 
 		t.Run(tc.name, func(t *testing.T) {
 			assert := assert.New(t)
@@ -576,7 +576,7 @@ func TestEventCreateOrReplace(t *testing.T) {
 	for _, tc := range testCases {
 		store := &mockstore.MockStore{}
 		bus := &mockbus.MockBus{}
-		actions := NewEventController(store, bus)
+		actions := eventAdapter{Store: store, Bus: bus}
 
 		t.Run(tc.name, func(t *testing.T) {
 			assert := assert.New(t)

@@ -9,6 +9,8 @@ import (
 	"github.com/sensu/sensu-go/types"
 )
 
+//go:generate go run ../../../scripts/make_mock/main.go EventController
+
 // eventUpdateFields whitelists fields allowed to be updated for Events
 var eventUpdateFields = []string{
 	"Timestamp",
@@ -17,7 +19,16 @@ var eventUpdateFields = []string{
 }
 
 // EventController expose actions in which a viewer can perform.
-type EventController struct {
+type EventController interface {
+	Query(ctx context.Context, entityID, checkName string) ([]*types.Event, error)
+	Find(ctx context.Context, entity, check string) (*types.Event, error)
+	Create(ctx context.Context, event types.Event) error
+	CreateOrReplace(ctx context.Context, event types.Event) error
+	Update(ctx context.Context, event types.Event) error
+	Destroy(ctx context.Context, entity, check string) error
+}
+
+type eventAdapter struct {
 	Store  store.EventStore
 	Policy authorization.EventPolicy
 	Bus    messaging.MessageBus
@@ -25,7 +36,7 @@ type EventController struct {
 
 // NewEventController returns new EventController
 func NewEventController(store store.EventStore, bus messaging.MessageBus) EventController {
-	return EventController{
+	return eventAdapter{
 		Store:  store,
 		Policy: authorization.Events,
 		Bus:    bus,
@@ -33,7 +44,7 @@ func NewEventController(store store.EventStore, bus messaging.MessageBus) EventC
 }
 
 // Query returns resources available to the viewer filter by given params.
-func (a EventController) Query(ctx context.Context, entityID, checkName string) ([]*types.Event, error) {
+func (a eventAdapter) Query(ctx context.Context, entityID, checkName string) ([]*types.Event, error) {
 	var results []*types.Event
 
 	// Fetch from store
@@ -68,7 +79,7 @@ func (a EventController) Query(ctx context.Context, entityID, checkName string) 
 
 // Find returns resource associated with given parameters if available to the
 // viewer.
-func (a EventController) Find(ctx context.Context, entity, check string) (*types.Event, error) {
+func (a eventAdapter) Find(ctx context.Context, entity, check string) (*types.Event, error) {
 	// Find (for events) requires both an entity and check
 	if entity == "" || check == "" {
 		return nil, NewErrorf(InvalidArgument, "Find() requires both an entity and a check")
@@ -89,7 +100,7 @@ func (a EventController) Find(ctx context.Context, entity, check string) (*types
 }
 
 // Destroy destroys the event indicated by the supplied entity and check.
-func (a EventController) Destroy(ctx context.Context, entity, check string) error {
+func (a eventAdapter) Destroy(ctx context.Context, entity, check string) error {
 	// Destroy (for events) requires both an entity and check
 	if entity == "" || check == "" {
 		return NewErrorf(InvalidArgument, "Destroy() requires both an entity and a check")
@@ -114,7 +125,7 @@ func (a EventController) Destroy(ctx context.Context, entity, check string) erro
 }
 
 // Update updates the event indicated by the supplied entity and check.
-func (a EventController) Update(ctx context.Context, event types.Event) error {
+func (a eventAdapter) Update(ctx context.Context, event types.Event) error {
 	check := event.Check
 	entity := event.Entity
 
@@ -152,7 +163,7 @@ func (a EventController) Update(ctx context.Context, event types.Event) error {
 
 // Create creates the event indicated by the supplied entity and check.
 // If an event already exists for the entity and check, it updates that event.
-func (a EventController) Create(ctx context.Context, event types.Event) error {
+func (a eventAdapter) Create(ctx context.Context, event types.Event) error {
 	check := event.Check
 	entity := event.Entity
 
@@ -186,7 +197,7 @@ func (a EventController) Create(ctx context.Context, event types.Event) error {
 
 // CreateOrReplace creates the event indicated by the supplied entity and check.
 // If an event already exists for the entity and check, it updates that event.
-func (a EventController) CreateOrReplace(ctx context.Context, event types.Event) error {
+func (a eventAdapter) CreateOrReplace(ctx context.Context, event types.Event) error {
 	// Adjust context
 	policy := a.Policy.WithContext(ctx)
 

@@ -52,9 +52,9 @@ type QueryEnvironmentFieldResolver interface {
 
 // QueryEventFieldResolverArgs contains arguments provided to event when selected
 type QueryEventFieldResolverArgs struct {
-	Ns     *NamespaceInput // Ns - self descriptive
-	Entity string          // Entity - self descriptive
-	Check  string          // Check - self descriptive
+	Ns     NamespaceInput // Ns - self descriptive
+	Entity string         // Entity - self descriptive
+	Check  *string        // Check - self descriptive
 }
 
 // QueryEventFieldResolverParams contains contextual info to resolve event field

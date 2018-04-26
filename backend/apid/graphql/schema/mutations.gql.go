@@ -11,7 +11,7 @@ import (
 
 // MutationCreateCheckFieldResolverArgs contains arguments provided to createCheck when selected
 type MutationCreateCheckFieldResolverArgs struct {
-	Input *CreateCheckInput // Input - self descriptive
+	Input CreateCheckInput // Input - self descriptive
 }
 
 // MutationCreateCheckFieldResolverParams contains contextual info to resolve createCheck field
@@ -28,7 +28,7 @@ type MutationCreateCheckFieldResolver interface {
 
 // MutationUpdateCheckFieldResolverArgs contains arguments provided to updateCheck when selected
 type MutationUpdateCheckFieldResolverArgs struct {
-	Input *UpdateCheckInput // Input - self descriptive
+	Input UpdateCheckInput // Input - self descriptive
 }
 
 // MutationUpdateCheckFieldResolverParams contains contextual info to resolve updateCheck field
@@ -45,7 +45,7 @@ type MutationUpdateCheckFieldResolver interface {
 
 // MutationDeleteCheckFieldResolverArgs contains arguments provided to deleteCheck when selected
 type MutationDeleteCheckFieldResolverArgs struct {
-	Input *DeleteRecordInput // Input - self descriptive
+	Input DeleteRecordInput // Input - self descriptive
 }
 
 // MutationDeleteCheckFieldResolverParams contains contextual info to resolve deleteCheck field
@@ -62,7 +62,7 @@ type MutationDeleteCheckFieldResolver interface {
 
 // MutationResolveEventFieldResolverArgs contains arguments provided to resolveEvent when selected
 type MutationResolveEventFieldResolverArgs struct {
-	Input *ResolveEventInput // Input - self descriptive
+	Input ResolveEventInput // Input - self descriptive
 }
 
 // MutationResolveEventFieldResolverParams contains contextual info to resolve resolveEvent field
@@ -349,7 +349,7 @@ type NamespaceInput struct {
 	// Organization - self descriptive
 	Organization string
 	// Environment - self descriptive
-	Environment string
+	Environment *string
 }
 
 // NamespaceInputType NamespaceInput refers to the namespace a resource may belong to.
@@ -582,7 +582,7 @@ var _ObjectTypeDeleteRecordPayloadDesc = graphql.ObjectDesc{
 // DeleteRecordInput Generic input used when deleting records.
 type DeleteRecordInput struct {
 	// ClientMutationID - A unique identifier for the client performing the mutation.
-	ClientMutationID string
+	ClientMutationID *string
 	// ID - Global ID of the check to update.
 	ID interface{}
 }
@@ -617,19 +617,19 @@ var _InputTypeDeleteRecordInputDesc = graphql.InputDesc{Config: _InputTypeDelete
 // CheckConfigInputs self descriptive
 type CheckConfigInputs struct {
 	// Command - command to run.
-	Command string
+	Command *string
 	// Interval - interval is the time interval, in seconds, in which the check should be run. Defaults to 60.
 	Interval int
 	/*
 	   LowFlapThreshold - lowFlapThreshold is the flap detection low threshold (% state change) for
 	   the check. Sensu uses the same flap detection algorithm as Nagios.
 	*/
-	LowFlapThreshold int
+	LowFlapThreshold *int
 	/*
 	   HighFlapThreshold - highFlapThreshold is the flap detection high threshold (% state change) for
 	   the check. Sensu uses the same flap detection algorithm as Nagios.
 	*/
-	HighFlapThreshold int
+	HighFlapThreshold *int
 	// Subscriptions - subscriptions refers to the list of subscribers for the check.
 	Subscriptions []string
 	// Handlers - handlers are the event handler for the check (incidents and/or metrics).
@@ -696,13 +696,13 @@ var _InputTypeCheckConfigInputsDesc = graphql.InputDesc{Config: _InputTypeCheckC
 // CreateCheckInput self descriptive
 type CreateCheckInput struct {
 	// ClientMutationID - A unique identifier for the client performing the mutation.
-	ClientMutationID string
+	ClientMutationID *string
 	// Ns - namespace the resulting resource will belong to.
-	Ns *NamespaceInput
+	Ns NamespaceInput
 	// Name - name of the resulting check.
 	Name string
 	// Props - properties of the check
-	Props *CheckConfigInputs
+	Props CheckConfigInputs
 }
 
 // CreateCheckInputType self descriptive
@@ -947,11 +947,11 @@ var _ObjectTypeCreateCheckPayloadDesc = graphql.ObjectDesc{
 // UpdateCheckInput self descriptive
 type UpdateCheckInput struct {
 	// ClientMutationID - A unique identifier for the client performing the mutation.
-	ClientMutationID string
+	ClientMutationID *string
 	// ID - Global ID of the check to update.
 	ID interface{}
 	// Props - properties of the check
-	Props *CheckConfigInputs
+	Props CheckConfigInputs
 }
 
 // UpdateCheckInputType self descriptive
@@ -1188,7 +1188,7 @@ var _ObjectTypeUpdateCheckPayloadDesc = graphql.ObjectDesc{
 // ResolveEventInput self descriptive
 type ResolveEventInput struct {
 	// ClientMutationID - A unique identifier for the client performing the mutation.
-	ClientMutationID string
+	ClientMutationID *string
 	// ID - Global ID of the event to resolve.
 	ID interface{}
 	// Source - The source of the resolve request

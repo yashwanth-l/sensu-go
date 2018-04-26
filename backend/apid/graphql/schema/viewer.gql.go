@@ -10,10 +10,10 @@ import (
 
 // ViewerEntitiesFieldResolverArgs contains arguments provided to entities when selected
 type ViewerEntitiesFieldResolverArgs struct {
-	First  int    // First - self descriptive
-	Last   int    // Last - self descriptive
-	Before string // Before - self descriptive
-	After  string // After - self descriptive
+	First  int     // First - self descriptive
+	Last   int     // Last - self descriptive
+	Before *string // Before - self descriptive
+	After  *string // After - self descriptive
 }
 
 // ViewerEntitiesFieldResolverParams contains contextual info to resolve entities field
@@ -30,10 +30,10 @@ type ViewerEntitiesFieldResolver interface {
 
 // ViewerChecksFieldResolverArgs contains arguments provided to checks when selected
 type ViewerChecksFieldResolverArgs struct {
-	First  int    // First - self descriptive
-	Last   int    // Last - self descriptive
-	Before string // Before - self descriptive
-	After  string // After - self descriptive
+	First  int     // First - self descriptive
+	Last   int     // Last - self descriptive
+	Before *string // Before - self descriptive
+	After  *string // After - self descriptive
 }
 
 // ViewerChecksFieldResolverParams contains contextual info to resolve checks field

@@ -41,10 +41,10 @@ type EnvironmentOrganizationFieldResolver interface {
 
 // EnvironmentEntitiesFieldResolverArgs contains arguments provided to entities when selected
 type EnvironmentEntitiesFieldResolverArgs struct {
-	First  int    // First - self descriptive
-	Last   int    // Last - self descriptive
-	Before string // Before - self descriptive
-	After  string // After - self descriptive
+	First  int     // First - self descriptive
+	Last   int     // Last - self descriptive
+	Before *string // Before - self descriptive
+	After  *string // After - self descriptive
 }
 
 // EnvironmentEntitiesFieldResolverParams contains contextual info to resolve entities field
@@ -61,10 +61,10 @@ type EnvironmentEntitiesFieldResolver interface {
 
 // EnvironmentChecksFieldResolverArgs contains arguments provided to checks when selected
 type EnvironmentChecksFieldResolverArgs struct {
-	First  int    // First - self descriptive
-	Last   int    // Last - self descriptive
-	Before string // Before - self descriptive
-	After  string // After - self descriptive
+	First  int     // First - self descriptive
+	Last   int     // Last - self descriptive
+	Before *string // Before - self descriptive
+	After  *string // After - self descriptive
 }
 
 // EnvironmentChecksFieldResolverParams contains contextual info to resolve checks field
@@ -83,10 +83,10 @@ type EnvironmentChecksFieldResolver interface {
 type EnvironmentEventsFieldResolverArgs struct {
 	First   int             // First - self descriptive
 	Last    int             // Last - self descriptive
-	Before  string          // Before - self descriptive
-	After   string          // After - self descriptive
+	Before  *string         // Before - self descriptive
+	After   *string         // After - self descriptive
 	OrderBy EventsListOrder // OrderBy - self descriptive
-	Filter  string          // Filter reduces the set using the given Sensu Query Expression predicate.
+	Filter  *string         // Filter reduces the set using the given Sensu Query Expression predicate.
 }
 
 // EnvironmentEventsFieldResolverParams contains contextual info to resolve events field
@@ -103,8 +103,8 @@ type EnvironmentEventsFieldResolver interface {
 
 // EnvironmentCheckHistoryFieldResolverArgs contains arguments provided to checkHistory when selected
 type EnvironmentCheckHistoryFieldResolverArgs struct {
-	Filter string // Filter reduces the set using the given Sensu Query Expression predicate.
-	Limit  int    // Limit adds optional limit to the number of entries returned.
+	Filter *string // Filter reduces the set using the given Sensu Query Expression predicate.
+	Limit  int     // Limit adds optional limit to the number of entries returned.
 }
 
 // EnvironmentCheckHistoryFieldResolverParams contains contextual info to resolve checkHistory field

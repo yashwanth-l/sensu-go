@@ -547,10 +547,11 @@ func genFieldResolverInterface(field *ast.FieldDefinition, i info) jen.Code {
 		code.Commentf("%s contains arguments provided to %s when selected", argsName, fieldName)
 		code.Type().Id(argsName).StructFunc(func(g *jen.Group) {
 			for _, arg := range field.Arguments {
-				retType := genConcreteTypeReference(arg.Type, i)
+				isNullable := arg.DefaultValue == nil
+				fieldType := genConcreteTypeReference(arg.Type, i, isNullable)
 				fieldName := toFieldName(arg.Name.Value)
 				comment := genFieldComment(fieldName, getDescription(arg), "")
-				g.Id(fieldName).Add(retType).Comment(comment)
+				g.Id(fieldName).Add(fieldType).Comment(comment)
 			}
 		})
 

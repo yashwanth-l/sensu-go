@@ -84,36 +84,20 @@ class NotFoundContent extends React.Component {
     classes: PropTypes.object.isRequired,
     graphic: PropTypes.node,
     title: PropTypes.node,
-    subtitle: PropTypes.node,
-    content: PropTypes.node,
+    subtitle: PropTypes.node.isRequired,
+    content: PropTypes.node.isRequired,
   };
 
   static defaultProps = {
     graphic: null,
     content: null,
     title: "404",
-    subtitle: "The page you requested isn’t here.",
   };
 
   constructor(props) {
     super(props);
     this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
   }
-
-  renderDefaultContent = () => (
-    <React.Fragment>
-      <p>
-        If you opened a link, it’s possible that the resource was deleted or you
-        no longer have access.
-      </p>
-      <p>
-        <a href="#back" onClick={() => window.history.back()}>
-          Go back
-        </a>{" "}
-        or <a href="/">return home</a>.
-      </p>
-    </React.Fragment>
-  );
 
   renderSymbol = () => (
     <span role="img" aria-label="not-found">
@@ -128,7 +112,7 @@ class NotFoundContent extends React.Component {
           <Hidden smDown>
             <GridItem sm={6}>
               <GraphicContainer>
-                {this.props.graphic || this.symbol}
+                {this.props.graphic || this.renderSymbol()}
               </GraphicContainer>
             </GridItem>
           </Hidden>

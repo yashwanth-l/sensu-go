@@ -2,28 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
+import { NotFoundLayout } from "/components/partials/NotFound";
+
+const symbols = ["✄···", "🤯", "🐳", "🚀", "🏗", "🚧"];
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
     display: "flex",
-    textAlign: "center",
     alignItems: "center",
-    justifyContent: "center",
-  },
-  container: {
-    maxWidth: 1080,
-    margin: theme.spacing.unit,
-  },
-  headline: {
-    fontSize: 100,
-    fontWeight: 600,
-    color: theme.palette.text.secondary,
-  },
-  body: {
-    fontSize: 36,
-    fontWeight: 300,
     color: theme.palette.text.hint,
     "& a": {
       textDecoration: "underline",
@@ -35,23 +22,20 @@ const styles = theme => ({
       color: "inherit",
     },
   },
-  graphic: {
-    margin: "-1em 0",
-    fontSize: 80,
-    color: theme.palette.text.hint,
-    "& span": {
-      color: theme.palette.text.primary,
-    },
+  container: {
+    maxWidth: 1080,
+    justifyContent: "center",
   },
-  [theme.breakpoints.up("sm")]: {
+  headline: {
+    fontSize: 128,
+    fontWeight: 100,
+  },
+  subheading: {
+    fontSize: 24,
+  },
+  [theme.breakpoints.up("md")]: {
     root: {
       textAlign: "left",
-    },
-    graphic: {
-      display: "block",
-      textAlign: "center",
-      fontSize: 96,
-      margin: 0,
     },
   },
 });
@@ -61,44 +45,49 @@ class NotFoundView extends React.PureComponent {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
-        <Grid container spacing={40} className={classes.container}>
-          <Typography
-            component={Grid}
-            item
-            xs={12}
-            sm={6}
-            className={classes.graphic}
-            variant="headline"
-          >
-            <p>
-              <span role="img" aria-label="ship">
-                🚀
-              </span>
-              {"  ·  "}
-              <span role="img" aria-label="moon">
-                🌖
-              </span>
-            </p>
-          </Typography>
-          <Grid item xs={12} sm={6}>
-            <Typography className={classes.headline} variant="headline">
-              404
-            </Typography>
-            <Typography className={classes.body} variant="subheading">
-              The page you requested was not found.{" "}
-              <a href="#back" onClick={() => window.history.back()}>
-                Go back
-              </a>{" "}
-              or <a href="/">return home</a>.
-            </Typography>
-          </Grid>
-        </Grid>
-      </div>
+      <NotFoundLayout
+        graphic={
+          <p>
+            <span role="img" aria-label="not-found">
+              {this.symbol}
+            </span>
+          </p>
+        }
+      >
+        <Typography
+          className={classes.headline}
+          variant="headline"
+          color="textSecondary"
+        >
+          404
+        </Typography>
+        <Typography
+          className={classes.subheading}
+          variant="subheading"
+          color="inherit"
+        >
+          The page you requested isn’t here.{" "}
+        </Typography>
+        <Typography variant="body1" color="inherit">
+          If you opened a link, it’s possible that the resource was deleted or
+          you no longer have access.
+        </Typography>
+        <Typography variant="body1" color="inherit">
+          <a href="#back" onClick={() => window.history.back()}>
+            Go back
+          </a>{" "}
+          or <a href="/">return home</a>.
+        </Typography>
+      </NotFoundLayout>
     );
   }
 }

@@ -12,12 +12,14 @@ class AnimatedLogo extends React.PureComponent {
     style: PropTypes.object,
     size: PropTypes.number,
     color: PropTypes.string,
+    duration: PropTypes.string,
   };
 
   static defaultProps = {
     style: {},
     size: 100,
     color: "currentColor",
+    duration: "2s",
   };
 
   componentWillMount() {
@@ -25,7 +27,7 @@ class AnimatedLogo extends React.PureComponent {
   }
 
   render() {
-    const { style, size, color } = this.props;
+    const { style, size, color, duration } = this.props;
 
     const edge = 100 / 1.414;
     const strokeWidth = 0.14 * edge;
@@ -37,7 +39,7 @@ class AnimatedLogo extends React.PureComponent {
           attributeName="r"
           from={strokeWidth / 2}
           to={100}
-          dur="2s"
+          dur={duration}
           repeatCount="indefinite"
           calcMode="spline"
           keySplines="0.5 0 1 0.5"

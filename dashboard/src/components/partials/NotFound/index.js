@@ -1,1 +1,1 @@
-export { default as NotFoundLayout } from "./NotFoundLayout";
+export { default } from "./NotFoundContent";

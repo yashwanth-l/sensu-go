@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/coreos/etcd/pkg/fileutil"
+	"go.etcd.io/etcd/pkg/fileutil"
 	"github.com/sensu/sensu-go/testing/testutil"
 )
 

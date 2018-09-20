@@ -3,7 +3,7 @@ package actions
 import (
 	"testing"
 
-	"github.com/coreos/etcd/clientv3"
+	"go.etcd.io/etcd/clientv3"
 	"github.com/sensu/sensu-go/testing/testutil"
 	"github.com/sensu/sensu-go/types"
 	"golang.org/x/net/context"

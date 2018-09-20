@@ -1,6 +1,6 @@
 package testing
 
-import "github.com/coreos/etcd/clientv3"
+import "go.etcd.io/etcd/clientv3"
 
 func (c *MockClient) MemberList() (*clientv3.MemberListResponse, error) {
 	args := c.Called()

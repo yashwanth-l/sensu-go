@@ -3,7 +3,7 @@ package etcd
 import (
 	"path"
 
-	"github.com/coreos/etcd/clientv3"
+	"go.etcd.io/etcd/clientv3"
 )
 
 const (

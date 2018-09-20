@@ -3,9 +3,9 @@ package testutil
 import (
 	"context"
 
-	"github.com/coreos/etcd/store"
 	"github.com/sensu/sensu-go/backend/authorization"
 	"github.com/sensu/sensu-go/types"
+	"go.etcd.io/etcd/etcdserver/api/v2store"
 )
 
 // SetContextFn take context and return new context
@@ -72,7 +72,7 @@ func ContextWithNoAccess(ctx context.Context) context.Context {
 
 // ContextWithStore returns new contextFn with given store value applied to
 // context.
-func ContextWithStore(store store.Store) SetContextFn {
+func ContextWithStore(store v2store.Store) SetContextFn {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, types.StoreKey, store)
 	}

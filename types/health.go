@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/coreos/etcd/etcdserver/etcdserverpb"
+	"go.etcd.io/etcd/etcdserver/etcdserverpb"
 )
 
 // ClusterHealth holds cluster member status info.

@@ -15,9 +15,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/coreos/etcd/clientv3"
-	"github.com/coreos/etcd/embed"
-	"github.com/coreos/etcd/pkg/transport"
+	"go.etcd.io/etcd/clientv3"
+	"go.etcd.io/etcd/embed"
+	"go.etcd.io/etcd/pkg/transport"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/sensu/sensu-go/types"
 )
@@ -179,11 +179,6 @@ func NewEtcd(config *Config) (*Etcd, error) {
 	if err != nil {
 		return nil, err
 	}
-	// The StartEtcd function overwrites the gRPC logger to log warnings and
-	// errors directly to stderr. This functionality cannot be turned off, but
-	// will be removed as part of the etcd 3.4 release. Until then, reset the
-	// gRPC logger to use logrus after starting the etcd server.
-	setGRPCLogger()
 
 	select {
 	case <-e.Server.ReadyNotify():

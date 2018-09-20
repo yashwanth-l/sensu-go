@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/coreos/etcd/clientv3"
+	"go.etcd.io/etcd/clientv3"
 )
 
 func getAuthenticationPath(id string) string {

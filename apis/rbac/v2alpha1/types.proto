@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package sensu.io.apis.rbac.v2alpha1;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "apis/meta/v1alpha1/types.proto";
+
+option go_package = "v2alpha1";
+
+option (gogoproto.populate_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.testgen_all) = true;
+
+// option (sensuproto.register_types) = true;
+// option (genclient) = true;
+
+// Rules hold information which describes an action that can be taken.
+message Rule {
+    // Verbs is a list of verbs that apply to all of the listed 
+    // resources for this rule. These include "get", "list", "watch", 
+    // "create", "update", "delete".
+    // TODO: add support for "patch" (this is expensive and should be
+    // delayed until a further release).
+    // TODO: add support for "watch" (via websockets)
+	repeated string verbs = 1;
+
+	// Resources is a list of resources that this rule applies to.
+	// "*" is all resources and is the default if a list of resources 
+    // is not specified.
+    // TODO: enumerate "resources"
+    repeated string resources = 2; // [(sensuproto.default) = "*"];
+
+	// Names is an optional list of resource names that the rule 
+    // applies to. 
+	repeated string names = 3;
+}
+
+// A Role applies only to a single Namespace.
+message Role {
+    // Kind is the string value representing the REST type of this object.
+    string kind = 1;
+
+    // APIVersion defines the version schema of the representation of an
+    // object in the format of ${group}/${version} (e.g. meta.sensu.io/v2alpha1).
+    string apiVersion = 2;
+
+    // Object metadata. In this case, Namespace is populated and
+    // defaults to "default".
+    sensu.io.apis.meta.v1alpha1.ObjectMeta metadata = 3;
+  
+    // Rules hold all of the Rules for this Role.
+    repeated Rule rules = 4;
+  }
+  
+  // ClusterRole is a role that applies to all Namespaces within
+  // a cluster.
+  message ClusterRole {
+    // Kind is the string value representing the REST type of this object.
+    string kind = 1;
+
+    // APIVersion defines the version schema of the representation of an
+    // object in the format of ${group}/${version} (e.g. meta.sensu.io/v2alpha1).
+    string apiVersion = 2;
+
+    // Object metadata. In this case, Namespace is populated and
+    // defaults to "default".
+    sensu.io.apis.meta.v1alpha1.ObjectMeta metadata = 3;
+  
+    // Rules hold all of the Rules for this Role.
+    repeated Rule rules = 4;
+  }
+  
+  // RoleRef is used to map groups to Roles or ClusterRoles.
+  message RoleRef {
+	// Kind is the type of resource being referenced.
+	string kind = 1;
+
+	// Name is the name of the resource being referenced.
+	string name = 2;
+}
+
+
+message Group {
+    // Kind is the string value representing the REST type of this object.
+    string kind = 1;
+
+    // APIVersion defines the version schema of the representation of an
+    // object in the format of ${group}/${version} (e.g. meta.sensu.io/v2alpha1).
+    string apiVersion = 2;
+
+    // Object metadata. In this case, Namespace is populated and
+    // defaults to "default".
+    sensu.io.apis.meta.v1alpha1.ObjectMeta metadata = 3;
+
+    // RoleRefs is the list of RoleRefs that make up the roles for this
+    // Group.
+    repeated RoleRef roleRefs = 4;
+}
+    

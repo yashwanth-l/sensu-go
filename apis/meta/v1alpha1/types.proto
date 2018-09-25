@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package sensu.io.apis.meta.v1alpha1;
+
+import "google/protobuf/timestamp.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "v1alpha1";
+
+option (gogoproto.populate_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.testgen_all) = true;
+
+// GroupVersion and GroupVersionKind are here simply to keep
+// much of the meta types generated.
+
+// GroupVersion identifies an API by its Group and Version.
+message GroupVersion {
+    // Group is the API Group
+    string group = 1;
+
+    // Version is the version of the API schema.
+    string version = 2;
+}
+
+// GroupVersionKind identifies a fully qualified type.
+message GroupVersionKind {
+    // Group is the API Group
+    string group = 1;
+
+    // Version is the version of the API schema.
+    string version = 2;
+
+    // Kind is the REST type of the object.
+    string Kind = 3;
+}
+
+// TypeMeta describes an individual object in an API response or request
+// with strings representing the type of the object and its API schema version.
+// Structures that are versioned or persisted should inline TypeMeta.
+message TypeMeta {
+    // Kind is the string value representing the REST type of this object.
+    string kind = 1;
+
+    // APIVersion defines the version schema of the representation of an
+    // object in the format of ${group}/${version} (e.g. meta.sensu.io/v2alpha1).
+    string apiVersion = 2;
+}
+
+// OwnerReference contains the information necessary to identify a parent object.
+message OwnerReference {
+    // API Version of the referent.
+    string apiVersion = 1;
+
+    // Kind of the referent.
+    string kind = 2;
+
+    // Namespace of the referent.
+    string namespace = 3;
+
+    // UUID of the refeent.
+    string uuid = 4;
+}
+
+// ObjectMeta contains standard metadata for all objects.
+message ObjectMeta {
+    // Name is the unique string identifier for this resource within the given namespace.
+    // It should be required when creating objects unless a given resource has a mechanism
+    // for generating names--this determination should happen at the client level.
+    string name = 1;
+
+    // Namespace is the space within which all names must be unique. This defaults to 
+    // "default", but objects that exist outside of a namespace (e.g. some RBAC objects)
+    // should have an empty Namespace.
+    string namespace = 2; // [(sensuproto.defaulter) = "default"];
+
+    // UUID is the globally unique identifier for this resource.
+    string uuid = 3;
+
+    // ResourceVersion is assigned by the server and is a monotonically increasing
+    // integer that clients can use to identify if a resource has changed.
+    string resourceVersion = 4; // [(sensuproto.client) = "readonly"];
+
+    // CreationTimestamp is the time at which the object was originally created.
+    google.protobuf.Timestamp creationTimestamp = 5;
+
+    // DeletionTimestamp is the time at which the object was deleted. This can be
+    // useful for identifying recently deleted objects.
+    google.protobuf.Timestamp deletionTimestamp = 6;
+
+    // Labels is a map of string keys to string values. These can be programmatically
+    // accessed from within the API. For example, these fields are made available to
+    // filters in the event pipeline.
+    map<string, string> labels = 7;
+
+    // Annotations is a string-to-string mapping of values that are not programmatically
+    // accessible, but that will be kept serialized in the object for third-party plugins
+    // to access. For example, if a plugin requires a complex set of data that isn't able
+    // to be represented by a simple string, users could serialize data into the annotations
+    // of the object and deserialize it within their plugin.
+    map<string, string> annotations = 8;
+
+    // OwnerReferences is a list of references to this object that can be used during
+    // attempts at a cascading deletion of this object. If OwnerReferences is not empty,
+    // then this object cannot be deleted.
+    repeated OwnerReference ownerReferences = 9;
+
+    // ClusterName is the name of the cluster that is the origin for this object.
+    string clusterName = 10;
+}

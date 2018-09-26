@@ -24,6 +24,14 @@ required = [
   name = "github.com/golang/protobuf"
   unused-packages = false
 
+[[prune.project]]
+  name = "github.com/sensu/sensu-proto"
+  unused-packages = false  
+
+[[constraint]]
+  name = "github.com/sensu/sensu-proto"
+  branch = "master"
+
 [[constraint]]
   name = "github.com/AlecAivazis/survey"
   version = "1.4.1"

@@ -726,6 +726,14 @@
   version = "v3.1.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:0b815b9f232d4665ecc9c4ba6f75aac23bb05b5ce8e5b58be2d25a78a00a80e4"
+  name = "github.com/sensu/sensu-proto"
+  packages = ["protobuf"]
+  pruneopts = "T"
+  revision = "5a29bf3e4913e97ee12b3e4c251e30c4a85e08a7"
+
+[[projects]]
   digest = "1:267c6a4d9d69c5d14f4f233d364a59eaea299ea17b29dfe9be07ce5226c19899"
   name = "github.com/shirou/gopsutil"
   packages = [
@@ -1072,6 +1080,8 @@
     "github.com/go-resty/resty",
     "github.com/gogo/protobuf/gogoproto",
     "github.com/gogo/protobuf/jsonpb",
+    "github.com/gogo/protobuf/proto",
+    "github.com/gogo/protobuf/types",
     "github.com/golang/protobuf/proto",
     "github.com/google/uuid",
     "github.com/gorilla/mux",
@@ -1091,6 +1101,7 @@
     "github.com/olekukonko/tablewriter",
     "github.com/robfig/cron",
     "github.com/sensu/govaluate",
+    "github.com/sensu/sensu-proto/protobuf",
     "github.com/shirou/gopsutil/host",
     "github.com/shirou/gopsutil/net",
     "github.com/shirou/w32",

@@ -29,10 +29,9 @@ message Rule {
 	repeated string verbs = 1;
 
 	// Resources is a list of resources that this rule applies to.
-	// "*" is all resources and is the default if a list of resources 
-    // is not specified.
+	// "*" represents all resources.
     // TODO: enumerate "resources"
-    repeated string resources = 2 [(sensuproto.default) = "*"];
+    repeated string resources = 2;
 
 	// Names is an optional list of resource names that the rule 
     // applies to. 

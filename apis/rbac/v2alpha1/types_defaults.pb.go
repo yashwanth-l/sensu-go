@@ -10,13 +10,15 @@ import _ "github.com/gogo/protobuf/gogoproto"
 import _ "github.com/sensu/sensu-go/apis/meta/v1alpha1"
 import _ "github.com/sensu/sensu-proto/protobuf"
 
+import time "time"
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+var _ = time.Kitchen
 
 func (r *Rule) Default() {
-	r.Resources = "*"
 }
 
 func (r *Role) Default() {

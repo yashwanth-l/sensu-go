@@ -85,11 +85,11 @@ message ObjectMeta {
     string resourceVersion = 4; // [(sensuproto.client) = "readonly"];
 
     // CreationTimestamp is the time at which the object was originally created.
-    google.protobuf.Timestamp creationTimestamp = 5;
+    google.protobuf.Timestamp creationTimestamp = 5 [(gogoproto.stdtime) = true];
 
     // DeletionTimestamp is the time at which the object was deleted. This can be
     // useful for identifying recently deleted objects.
-    google.protobuf.Timestamp deletionTimestamp = 6;
+    google.protobuf.Timestamp deletionTimestamp = 6 [(gogoproto.stdtime) = true];
 
     // Labels is a map of string keys to string values. These can be programmatically
     // accessed from within the API. For example, these fields are made available to

@@ -2,8 +2,9 @@ syntax = "proto3";
 
 package sensu.io.apis.rbac.v2alpha1;
 
+import "github.com/sensu/sensu-proto/protobuf/sensu.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "apis/meta/v1alpha1/types.proto";
+import "github.com/sensu/sensu-go/apis/meta/v1alpha1/types.proto";
 
 option go_package = "v2alpha1";
 
@@ -31,7 +32,7 @@ message Rule {
 	// "*" is all resources and is the default if a list of resources 
     // is not specified.
     // TODO: enumerate "resources"
-    repeated string resources = 2; // [(sensuproto.default) = "*"];
+    repeated string resources = 2 [(sensuproto.default) = "*"];
 
 	// Names is an optional list of resource names that the rule 
     // applies to. 

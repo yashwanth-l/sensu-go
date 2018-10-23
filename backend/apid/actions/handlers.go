@@ -17,7 +17,6 @@ var updateFields = []string{
 	"Command",
 	"Handlers",
 	"Socket",
-	"RuntimeAssets",
 }
 
 // HandlerController exposes actions available for handlers
@@ -172,17 +171,17 @@ func (c HandlerController) Update(ctx context.Context, newHandler types.Handler)
 	ctx = addOrgEnvToContext(ctx, &newHandler)
 	abilities := c.Policy.WithContext(ctx)
 
-	// Find existing handler
+	// Find existing check
 	handler, err := c.Store.GetHandlerByName(ctx, newHandler.Name)
 	if err != nil {
 		return NewError(InternalErr, err)
 	} else if handler == nil {
-		return NewErrorf(NotFound, newHandler.Name)
+		return NewErrorf(NotFound)
 	}
 
 	// Verify viewer can make change
 	if yes := abilities.CanUpdate(handler); !yes {
-		return NewErrorf(PermissionDenied, "update")
+		return NewErrorf(PermissionDenied)
 	}
 
 	// Copy

@@ -12,7 +12,6 @@ var mutatorUpdateFields = []string{
 	"Command",
 	"Timeout",
 	"EnvVars",
-	"RuntimeAssets",
 }
 
 // MutatorController allows querying mutators in bulk or by name.

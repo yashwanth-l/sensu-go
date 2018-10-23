@@ -5,7 +5,6 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/sensu/sensu-go/asset"
 	"github.com/sensu/sensu-go/backend/messaging"
 	"github.com/sensu/sensu-go/backend/store"
 	"github.com/sensu/sensu-go/command"
@@ -28,7 +27,6 @@ type ExtensionExecutorGetterFunc func(*types.Extension) (rpc.ExtensionExecutor, 
 // handler configuration determines which Sensu filters and mutator
 // are used.
 type Pipelined struct {
-	assetGetter       asset.Getter
 	stopping          chan struct{}
 	running           *atomic.Value
 	wg                *sync.WaitGroup
@@ -46,7 +44,6 @@ type Config struct {
 	Store                   store.Store
 	Bus                     messaging.MessageBus
 	ExtensionExecutorGetter ExtensionExecutorGetterFunc
-	AssetGetter             asset.Getter
 }
 
 // Option is a functional option used to configure Pipelined.
@@ -64,7 +61,6 @@ func New(c Config, options ...Option) (*Pipelined, error) {
 		errChan:           make(chan error, 1),
 		eventChan:         make(chan interface{}, 100),
 		executor:          command.NewExecutor(),
-		assetGetter:       c.AssetGetter,
 	}
 	for _, o := range options {
 		if err := o(p); err != nil {

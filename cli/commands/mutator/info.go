@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"strings"
 
 	"github.com/sensu/sensu-go/cli"
 	"github.com/sensu/sensu-go/cli/commands/helpers"
@@ -68,10 +67,6 @@ func printToList(v interface{}, writer io.Writer) error {
 			{
 				Label: "Namespace",
 				Value: mutator.Namespace,
-			},
-			{
-				Label: "Runtime Assets",
-				Value: strings.Join(mutator.RuntimeAssets, ", "),
 			},
 		},
 	}

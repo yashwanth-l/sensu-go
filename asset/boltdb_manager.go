@@ -14,13 +14,21 @@ var (
 	assetBucketName = []byte("assets")
 )
 
+// A Getter is responsible for fetching (based on fitler selection), verifying,
+// and expanding an asset. Calls to the Get method block until the Asset has
+// fetched, verified, and expanded or it returns an error indicating why getting
+// the asset failed.
+type Getter interface {
+	Get(*types.Asset) (*RuntimeAsset, error)
+}
+
 // NewBoltDBGetter returns a new default asset Getter. If fetcher, verifier, or
 // expander are nil, the getter will use the built-in components.
 func NewBoltDBGetter(db *bolt.DB,
 	localStorage string,
 	fetcher Fetcher,
 	verifier Verifier,
-	expander Expander) Getter {
+	expander Expander) (Getter, error) {
 
 	if fetcher == nil {
 		fetcher = defaultFetcher
@@ -40,7 +48,7 @@ func NewBoltDBGetter(db *bolt.DB,
 		fetcher:      fetcher,
 		expander:     expander,
 		verifier:     verifier,
-	}
+	}, nil
 }
 
 // boltDBAssetManager is responsible for the installing and storing the metadata

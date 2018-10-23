@@ -9,6 +9,6 @@ import (
 
 func main() {
 	if err := cmd.Execute(backend.Initialize); err != nil {
-		logger.WithError(err).Fatal("error executing sensu-backend")
+		logger.Fatal(err)
 	}
 }

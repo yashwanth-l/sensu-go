@@ -43,8 +43,7 @@ func TestSendLoop(t *testing.T) {
 
 	wsURL := strings.Replace(ts.URL, "http", "ws", 1)
 
-	cfg, cleanup := FixtureConfig()
-	defer cleanup()
+	cfg := FixtureConfig()
 	cfg.BackendURLs = []string{wsURL}
 	cfg.API.Port = 0
 	cfg.Socket.Port = 0
@@ -78,8 +77,7 @@ func TestReceiveLoop(t *testing.T) {
 	defer ts.Close()
 
 	wsURL := strings.Replace(ts.URL, "http", "ws", 1)
-	cfg, cleanup := FixtureConfig()
-	defer cleanup()
+	cfg := FixtureConfig()
 	cfg.BackendURLs = []string{wsURL}
 	cfg.API.Port = 0
 	cfg.Socket.Port = 0
@@ -106,8 +104,7 @@ func TestReceiveLoop(t *testing.T) {
 func TestPeriodicKeepalive(t *testing.T) {
 	done := make(chan struct{})
 
-	cfg, cleanup := FixtureConfig()
-	defer cleanup()
+	cfg := FixtureConfig()
 	server := transport.NewServer()
 
 	testKeepalive := func(w http.ResponseWriter, r *http.Request) {
@@ -184,8 +181,7 @@ func TestKeepaliveLoggingRedaction(t *testing.T) {
 
 	wsURL := strings.Replace(ts.URL, "http", "ws", 1)
 
-	cfg, cleanup := FixtureConfig()
-	defer cleanup()
+	cfg := FixtureConfig()
 	cfg.AgentID = "TestLoggingRedaction"
 	cfg.ExtendedAttributes = []byte(`{"ec2_access_key": "P@ssw0rd!","secret": "P@ssw0rd!"}`)
 	cfg.Redact = []string{"ec2_access_key"}
@@ -210,8 +206,7 @@ func TestInvalidAgentID_GH2022(t *testing.T) {
 
 	wsURL := strings.Replace(ts.URL, "http", "ws", 1)
 
-	cfg, cleanup := FixtureConfig()
-	defer cleanup()
+	cfg := FixtureConfig()
 	cfg.AgentID = "Test Agent"
 	cfg.BackendURLs = []string{wsURL}
 	cfg.API.Port = 0

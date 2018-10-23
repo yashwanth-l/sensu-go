@@ -26,8 +26,7 @@ func TestHandleCheck(t *testing.T) {
 		assert.FailNow("error marshaling check request")
 	}
 
-	config, cleanup := FixtureConfig()
-	defer cleanup()
+	config := FixtureConfig()
 	agent := NewAgent(config)
 	ex := &mockexecutor.MockExecutor{}
 	agent.executor = ex
@@ -56,8 +55,7 @@ func TestExecuteCheck(t *testing.T) {
 	request := &types.CheckRequest{Config: checkConfig, Issued: time.Now().Unix()}
 	checkConfig.Stdin = true
 
-	config, cleanup := FixtureConfig()
-	defer cleanup()
+	config := FixtureConfig()
 	agent := NewAgent(config)
 	ch := make(chan *transport.Message, 1)
 	agent.sendq = ch
@@ -147,8 +145,7 @@ func TestHandleTokenSubstitution(t *testing.T) {
 	request := &types.CheckRequest{Config: checkConfig, Issued: time.Now().Unix()}
 	checkConfig.Stdin = true
 
-	config, cleanup := FixtureConfig()
-	defer cleanup()
+	config := FixtureConfig()
 	config.ExtendedAttributes = []byte(`{"team":"devops"}`)
 	config.AgentID = "TestTokenSubstitution"
 	agent := NewAgent(config)
@@ -182,8 +179,7 @@ func TestHandleTokenSubstitutionNoKey(t *testing.T) {
 	request := &types.CheckRequest{Config: checkConfig, Issued: time.Now().Unix()}
 	checkConfig.Stdin = true
 
-	config, cleanup := FixtureConfig()
-	defer cleanup()
+	config := FixtureConfig()
 	config.ExtendedAttributes = []byte(`{"team":"devops"}`)
 	config.AgentID = "TestTokenSubstitution"
 	agent := NewAgent(config)
@@ -211,8 +207,7 @@ func TestHandleTokenSubstitutionNoKey(t *testing.T) {
 func TestPrepareCheck(t *testing.T) {
 	assert := assert.New(t)
 
-	config, cleanup := FixtureConfig()
-	defer cleanup()
+	config := FixtureConfig()
 	agent := NewAgent(config)
 
 	// Invalid check

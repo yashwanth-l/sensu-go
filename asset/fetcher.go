@@ -29,7 +29,7 @@ func httpGet(url string) (io.ReadCloser, error) {
 
 	resp, err := client.Get(url)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching asset: %s", err)
+		return nil, fmt.Errorf("error fetching asset: %s", err.Error())
 	}
 
 	return resp.Body, nil

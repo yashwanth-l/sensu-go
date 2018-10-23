@@ -17,11 +17,12 @@ import (
 )
 
 type TestCheckScheduler struct {
-	check     *types.CheckConfig
-	exec      *CheckExecutor
-	msgBus    *messaging.WizardBus
-	scheduler *CheckScheduler
-	channel   chan interface{}
+	check        *types.CheckConfig
+	exec         *CheckExecutor
+	msgBus       *messaging.WizardBus
+	scheduler    *CheckScheduler
+	channel      chan interface{}
+	subscription messaging.Subscription
 }
 
 func (tcs *TestCheckScheduler) Receiver() chan<- interface{} {
@@ -88,11 +89,13 @@ func TestCheckSchedulerInterval(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		msg := <-scheduler.channel
-		res, ok := msg.(*types.CheckRequest)
-		assert.True(ok)
-		assert.Equal("check1", res.Config.Name)
-		wg.Done()
+		select {
+		case msg := <-scheduler.channel:
+			res, ok := msg.(*types.CheckRequest)
+			assert.True(ok)
+			assert.Equal("check1", res.Config.Name)
+			wg.Done()
+		}
 	}()
 
 	assert.NoError(scheduler.scheduler.Start())
@@ -182,11 +185,13 @@ func TestCheckSchedulerCron(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		msg := <-scheduler.channel
-		res, ok := msg.(*types.CheckRequest)
-		assert.True(ok)
-		assert.Equal("check1", res.Config.Name)
-		wg.Done()
+		select {
+		case msg := <-scheduler.channel:
+			res, ok := msg.(*types.CheckRequest)
+			assert.True(ok)
+			assert.Equal("check1", res.Config.Name)
+			wg.Done()
+		}
 	}()
 
 	assert.NoError(scheduler.scheduler.Start())

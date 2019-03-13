@@ -2,6 +2,10 @@
   "name": "dashboardd",
   "version": "0.1.0",
   "private": true,
+  "files": [
+    "build",
+    "config"
+  ],
   "engines": {
     "node": ">= 8",
     "npm": ">= 5.2.0",
@@ -14,7 +18,7 @@
   "scripts": {
     "prettier": "npx prettier --write '**/*.js'",
     "start": "node scripts serve",
-    "build": "node scripts build",
+    "build": "node scripts build && yarn pack --filename dashboard.tgz",
     "analyze": "npx webpack-bundle-analyzer stats.json -s gzip",
     "lint": "npx eslint .",
     "spec": "node scripts test.js --env=jsdom",

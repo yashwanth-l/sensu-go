@@ -1,18 +1,16 @@
 import fs from "fs";
 import path from "path";
 import webpack from "webpack";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import SWPrecacheWebpackPlugin from "sw-precache-webpack-plugin";
 import eslintFormatter from "react-dev-utils/eslintFormatter";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
-import CleanPlugin from "clean-webpack-plugin";
-import { StatsWriterPlugin } from "webpack-stats-plugin";
 import UglifyJsPlugin from "uglifyjs-webpack-plugin";
 
 const PRODUCTION = "production";
 const DEVELOPMENT = "development";
 
-const base = ({
+const root = fs.realpathSync(process.cwd());
+
+export default ({
   mode = process.env.NODE_ENV !== PRODUCTION ? DEVELOPMENT : PRODUCTION,
   chunkName = mode !== PRODUCTION ? "[name]" : "[name].[chunkHash:8]",
   context,
@@ -23,6 +21,7 @@ const base = ({
   target = "web",
   ...config
 }) => ({
+  context: root,
   bail: true,
   target,
   mode,
@@ -196,5 +195,3 @@ const base = ({
 
   ...config,
 });
-
-export default base;

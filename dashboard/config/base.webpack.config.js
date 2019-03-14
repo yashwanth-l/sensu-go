@@ -2,15 +2,29 @@ import fs from "fs";
 import path from "path";
 import webpack from "webpack";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
-// import UglifyJsPlugin from "uglifyjs-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 
 const root = fs.realpathSync(process.cwd());
 
+const isDevMode = mode => mode === "development";
+
 export default ({
   mode = process.env.NODE_ENV,
-  chunkName = mode === "development" ? "[name]" : "[name]_[chunkhash:8]",
-  fileName = mode === "development" ? "[name]" : "[name]_[contenthash:8]",
+
+  // Include a hash of each file's content in its name unless running a
+  // development build. This ensures browser caches are automatically invalided
+  // by newer asset versions. We avoid using [hash] here since it represents
+  // a hash of the entire build, and not of each individual file. Using it would
+  // cause a update to any file in the build to change the name of all files,
+  // even ones that that didn't change from the previous build.
+  contentHashName = isDevMode(mode) ? "[name]" : "[name]_[contenthash:4]",
+  chunkHashName = isDevMode(mode) ? "[name]" : "[name]_[chunkhash:4]",
+
+  // file-loader calculates hashes differently from the rest of webpack
+  // [hash] in file loader is equivalent to [contenthash] elsewhere
+  // see: https://github.com/webpack-contrib/file-loader#placeholders
+  fileLoaderHashName = isDevMode(mode) ? "[name]" : "[name]_[hash:4]",
+
   context,
   entry,
   output,
@@ -23,17 +37,18 @@ export default ({
   bail: true,
   target,
   mode,
-  devtool: mode === "development" ? "eval" : "nosources-source-map",
+  entry,
 
-  entry: {
-    ...entry,
-  },
+  // Emit source maps in production builds that include only the line and
+  // filename mapping. This reduces the source map file size considerably and
+  // preserves the obfuscation of the original source.
+  devtool: isDevMode(mode) ? "eval" : "nosources-source-map",
 
   output: {
-    filename: `${fileName}.js`,
-    chunkFilename: `${chunkName}.js`,
-    library: chunkName,
-    pathinfo: mode === "development",
+    filename: `${contentHashName}.js`,
+    chunkFilename: `${chunkHashName}.js`,
+    library: chunkHashName,
+    pathinfo: isDevMode(mode),
     ...output,
   },
 
@@ -45,7 +60,8 @@ export default ({
         terserOptions: {
           // Disable function name minification in order to preserve class
           // names. This makes tracking down bugs in production builds far
-          // more manageable.
+          // more manageable at the expense of slightly larger (about 15%)
+          // compressed bundle sizes.
           keep_fnames: true,
         },
       }),
@@ -77,14 +93,6 @@ export default ({
       {
         oneOf: [
           {
-            test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-            loader: require.resolve("url-loader"),
-            options: {
-              limit: 10000,
-              filename: `static/media/${fileName}.[ext]`,
-            },
-          },
-          {
             test: /\.css$/,
             use: ["style-loader", "css-loader"],
           },
@@ -92,14 +100,19 @@ export default ({
             test: /\.worker\.js$/,
             loader: "worker-loader",
             options: {
-              name: "static/[hash].worker.js",
+              name: `${contentHashName}.js`,
             },
           },
           {
             test: /\.macro\.js$/,
             exclude: path.resolve(root, "node_modules"),
             loaders: [
-              require.resolve("./macroLoader"),
+              {
+                loader: require.resolve("./macroLoader"),
+                options: {
+                  filename: `${fileLoaderHashName}.[ext]`,
+                },
+              },
               require.resolve("value-loader"),
             ],
           },
@@ -115,12 +128,15 @@ export default ({
             loader: require.resolve("file-loader"),
             exclude: [/\.js$/, /\.html$/, /\.json$/],
             options: {
-              name: `static/media/${fileName}.[ext]`,
+              name: `${fileLoaderHashName}.[ext]`,
             },
           },
           {
             test: /\.html$/,
-            loader: require.resolve("raw-loader"),
+            loader: require.resolve("html-loader"),
+            options: {
+              interpolate: true,
+            },
           },
         ],
       },
@@ -130,43 +146,21 @@ export default ({
   },
 
   plugins: [
-    // new CleanPlugin([outputPath, path.resolve(outputPath, "../stats.json")], {
-    //   root,
-    //   verbose: false,
-    // }),
     new webpack.ProvidePlugin({
       // Alias any reference to global Promise object to bluebird.
       Promise: require.resolve("bluebird/js/browser/bluebird.core.js"),
     }),
-    // Generates an `index.html` file with the <script> injected.
-    // new HtmlWebpackPlugin({
-    //   inject: true,
-    //   template: path.resolve(root, "src/static/index.html"),
-    //   minify: mode !== "development" && {
-    //     removeComments: true,
-    //     collapseWhitespace: true,
-    //     removeRedundantAttributes: true,
-    //     useShortDoctype: true,
-    //     removeEmptyAttributes: true,
-    //     removeStyleLinkTypeAttributes: true,
-    //     keepClosingSlash: true,
-    //     minifyJS: true,
-    //     minifyCSS: true,
-    //     minifyURLs: true,
-    //   },
-    // }),
-    // Remove moment locales.
+    // Prevent moment locales from getting bundled.
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // new webpack.NamedChunksPlugin(),
   ]
     .concat(
-      mode !== "development" && [
-        // Use hashed module ids in production builds
+      !isDevMode(mode) && [
+        // Use hashed module ids in production builds.
         new webpack.HashedModuleIdsPlugin(),
       ],
     )
     .concat(
-      mode === "development" && [
+      isDevMode(mode) && [
         new CaseSensitivePathsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
       ],

@@ -7,7 +7,6 @@ import injectTapEventPlugin from "react-tap-event-plugin";
 
 // eslint-disable-next-line import/extensions
 import "typeface-roboto";
-import "/client/static";
 
 import polyfill from "/lib/polyfill";
 

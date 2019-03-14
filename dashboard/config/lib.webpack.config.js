@@ -30,14 +30,14 @@ export default makeConfig({
   },
 
   output: {
-    path: outputPath,
+    path: path.join(outputPath, "public"),
   },
 
   plugins: [
     new CleanPlugin(outputPath, { root }),
     new webpack.DllPlugin({
       name: "lib",
-      path: path.join(root, "build", "lib.manifest.json"),
+      path: path.join(outputPath, "dll.json"),
     }),
   ],
 });

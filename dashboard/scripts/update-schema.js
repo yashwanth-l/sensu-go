@@ -7,7 +7,6 @@ import { resolve, relative } from "path";
 import { sync as globSync } from "glob";
 import { writeFileSync, readFileSync } from "fs";
 import { printSchema, buildASTSchema, extendSchema, parse } from "graphql";
-import { success } from "./log";
 import chalk from "chalk";
 
 const serverSchemaPath = resolve("../backend/apid/graphql/schema/*.graphql");
@@ -72,9 +71,6 @@ writeFileSync(combinedFilePath, combinedSchemaDocument, { mode: 644 });
 
 // Party time!
 console.info(
-  "✍️",
-  "",
-  "Wrote combined schema to",
+  "✍️   Wrote combined schema to",
   `${chalk.bold(relative(process.cwd(), combinedFilePath))}.`,
 );
-console.info(success(), "", chalk.green("Update successful!"));

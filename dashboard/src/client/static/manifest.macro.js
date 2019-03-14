@@ -1,7 +1,5 @@
-/* eslint-disable import/no-webpack-loader-syntax */
-
-import appIcon from "!!file-loader?name=[name].[ext]!./app-icon.png";
-import appIconSmall from "!!file-loader?name=[name].[ext]!./app-icon-sm.png";
+import appIcon from "./app-icon.png";
+import appIconSmall from "./app-icon-sm.png";
 
 export default ({ emitFile }) =>
   emitFile(
@@ -23,7 +21,7 @@ export default ({ emitFile }) =>
       ],
       start_url: "/",
       display: "standalone",
-      theme_color: "#000000",
+      theme_color: "#2D3555",
       background_color: "#ffffff",
     }),
   );

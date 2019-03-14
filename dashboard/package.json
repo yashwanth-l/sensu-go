@@ -27,7 +27,7 @@
     "lint": "./node_modules/.bin/eslint .",
     "spec": "node scripts test.js --env=jsdom",
     "test": "yarn check-version && yarn build && yarn lint && yarn spec --coverage",
-    "update-schema": "node scripts updateSchema",
+    "update-schema": "node scripts update-schema",
     "flow": "./node_modules/.bin/flow"
   },
   "dependencies": {
@@ -90,7 +90,7 @@
     "eslint-plugin-react": "^7.7.0",
     "esm": "^3.2.16",
     "fbjs": "^1.0.0",
-    "file-loader": "^1.1.11",
+    "file-loader": "^3.0.1",
     "flow-bin": "^0.84.0",
     "git-rev-sync": "^1.12.0",
     "glob": "^7.1.2",
@@ -99,6 +99,7 @@
     "graphql-tag": "^2.9.2",
     "highlight.js": "^9.13.1",
     "hoist-non-react-statics": "^2.5.0",
+    "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.18.0",
     "intl": "^1.2.5",
@@ -113,6 +114,7 @@
     "koa-compressor": "^1.0.3",
     "koa-connect": "^2.0.1",
     "koa-webpack": "^3.0.2",
+    "loader-utils": "^1.2.3",
     "lodash": "^4.17.0",
     "modernizr": "^3.6.0",
     "prettier": "^1.16.4",

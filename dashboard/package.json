@@ -4,33 +4,39 @@
   "private": true,
   "files": [
     "build",
-    "config"
+    "config",
+    "scripts"
   ],
   "engines": {
     "node": ">= 8",
     "npm": ">= 5.2.0",
-    "yarn": ">= 1.5.0"
+    "yarn": "^1.13.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/sensu/sensu-go/"
   },
   "scripts": {
-    "prettier": "npx prettier --write '**/*.js'",
+    "check-version": "node scripts check-yarn-version",
+    "prettier": "./node_modules/.bin/prettier --write '**/*.js'",
     "start": "node scripts serve",
-    "build": "node scripts build && yarn pack --filename dashboard.tgz",
-    "analyze": "npx webpack-bundle-analyzer stats.json -s gzip",
-    "lint": "npx eslint .",
+    "build:lib": "./node_modules/.bin/webpack -r esm --config config/lib.webpack.config.js",
+    "build:client": "./node_modules/.bin/webpack -r esm --config config/client.webpack.config.js",
+    "build": "yarn run build:lib && yarn run build:client",
+    "analyze": "./node_modules/.bin/webpack-bundle-analyzer stats.json -s gzip",
+    "lint": "./node_modules/.bin/eslint .",
     "spec": "node scripts test.js --env=jsdom",
-    "test": "yarn build && yarn lint && yarn spec --coverage",
+    "test": "yarn check-version && yarn build && yarn lint && yarn spec --coverage",
     "update-schema": "node scripts updateSchema",
-    "flow": "npx flow"
+    "flow": "./node_modules/.bin/flow"
   },
   "dependencies": {
     "@10xjs/date-input-controller": "0.1.6",
     "@10xjs/form": "^0.1.7",
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^3.0.0",
+    "acorn": "^6.1.1",
+    "acorn-dynamic-import": "^4.0.0",
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",
     "apollo-link": "^1.2.2",
@@ -82,7 +88,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.7.0",
-    "esm": "3.0.31",
+    "esm": "^3.2.16",
     "fbjs": "^1.0.0",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.84.0",
@@ -129,16 +135,19 @@
     "redux-freeze": "^0.1.5",
     "redux-thunk": "^2.2.0",
     "regenerator-runtime": "^0.11.1",
+    "semver": "^5.6.0",
     "source-map-loader": "bryanforbes/source-map-loader#module-context",
     "stacktrace-js": "^2.0.0",
     "style-loader": "^0.23.1",
+    "terser-webpack-plugin": "^1.2.3",
     "typeface-roboto": "^0.0.54",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^1.0.1",
     "url-search-params-polyfill": "^2.0.3",
     "value-loader": "^0.1.4",
     "warning": "^3.0.0",
-    "webpack": "^4.8.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
     "webpack-stats-plugin": "^0.2.1",
     "whatwg-fetch": "^2.0.4",
     "worker-loader": "^2.0.0"

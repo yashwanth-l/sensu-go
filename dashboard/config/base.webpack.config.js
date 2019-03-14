@@ -1,18 +1,16 @@
 import fs from "fs";
 import path from "path";
 import webpack from "webpack";
-import eslintFormatter from "react-dev-utils/eslintFormatter";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
-import UglifyJsPlugin from "uglifyjs-webpack-plugin";
-
-const PRODUCTION = "production";
-const DEVELOPMENT = "development";
+// import UglifyJsPlugin from "uglifyjs-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
 
 const root = fs.realpathSync(process.cwd());
 
 export default ({
-  mode = process.env.NODE_ENV !== PRODUCTION ? DEVELOPMENT : PRODUCTION,
-  chunkName = mode !== PRODUCTION ? "[name]" : "[name].[chunkHash:8]",
+  mode = process.env.NODE_ENV,
+  chunkName = mode === "development" ? "[name]" : "[name]_[chunkhash:8]",
+  fileName = mode === "development" ? "[name]" : "[name]_[contenthash:8]",
   context,
   entry,
   output,
@@ -25,25 +23,26 @@ export default ({
   bail: true,
   target,
   mode,
+  devtool: mode === "development" ? "eval" : "nosources-source-map",
 
   entry: {
     ...entry,
   },
 
   output: {
-    filename: `${chunkName}.js`,
+    filename: `${fileName}.js`,
     chunkFilename: `${chunkName}.js`,
     library: chunkName,
-    pathinfo: mode !== PRODUCTION,
+    pathinfo: mode === "development",
     ...output,
   },
 
   optimization: {
     splitChunks: { minChunks: 2 },
     minimizer: [
-      new UglifyJsPlugin({
+      new TerserPlugin({
         sourceMap: true,
-        uglifyOptions: {
+        terserOptions: {
           // Disable function name minification in order to preserve class
           // names. This makes tracking down bugs in production builds far
           // more manageable.
@@ -67,22 +66,6 @@ export default ({
     rules: [
       {
         enforce: "pre",
-        test: /\.(js|jsx)$/,
-        exclude: path.resolve(root, "node_modules"),
-        use: [
-          {
-            loader: require.resolve("eslint-loader"),
-            options: {
-              formatter: eslintFormatter,
-              eslintPath: require.resolve("eslint"),
-              emitError: false,
-              emitWarning: mode !== PRODUCTION,
-            },
-          },
-        ],
-      },
-      {
-        enforce: "pre",
         test: /\.js$/,
         include: path.resolve(root, "node_modules"),
         exclude: [path.resolve(root, "node_modules/apollo-client")],
@@ -98,7 +81,7 @@ export default ({
             loader: require.resolve("url-loader"),
             options: {
               limit: 10000,
-              filename: `static/media/${chunkName}.[ext]`,
+              filename: `static/media/${fileName}.[ext]`,
             },
           },
           {
@@ -125,15 +108,14 @@ export default ({
             exclude: path.resolve(root, "node_modules"),
             loader: require.resolve("babel-loader"),
             options: {
-              compact: mode === PRODUCTION,
-              cacheDirectory: mode !== PRODUCTION,
+              cacheDirectory: mode === "development",
             },
           },
           {
             loader: require.resolve("file-loader"),
             exclude: [/\.js$/, /\.html$/, /\.json$/],
             options: {
-              name: `static/media/${chunkName}.[ext]`,
+              name: `static/media/${fileName}.[ext]`,
             },
           },
           {
@@ -152,20 +134,15 @@ export default ({
     //   root,
     //   verbose: false,
     // }),
-    new webpack.DefinePlugin({
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-    }),
-
     new webpack.ProvidePlugin({
       // Alias any reference to global Promise object to bluebird.
       Promise: require.resolve("bluebird/js/browser/bluebird.core.js"),
     }),
-
     // Generates an `index.html` file with the <script> injected.
     // new HtmlWebpackPlugin({
     //   inject: true,
     //   template: path.resolve(root, "src/static/index.html"),
-    //   minify: mode === PRODUCTION && {
+    //   minify: mode !== "development" && {
     //     removeComments: true,
     //     collapseWhitespace: true,
     //     removeRedundantAttributes: true,
@@ -178,16 +155,20 @@ export default ({
     //     minifyURLs: true,
     //   },
     // }),
-
     // Remove moment locales.
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.HashedModuleIdsPlugin(),
+    // new webpack.NamedChunksPlugin(),
   ]
     .concat(
-      mode !== PRODUCTION && [
-        new webpack.NamedModulesPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
+      mode !== "development" && [
+        // Use hashed module ids in production builds
+        new webpack.HashedModuleIdsPlugin(),
+      ],
+    )
+    .concat(
+      mode === "development" && [
         new CaseSensitivePathsPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
       ],
     )
     .concat(plugins)

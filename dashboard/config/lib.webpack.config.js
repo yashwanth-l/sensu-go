@@ -7,21 +7,26 @@ import CleanPlugin from "clean-webpack-plugin";
 import makeConfig from "./base.webpack.config";
 
 const root = fs.realpathSync(process.cwd());
+const outputPath = path.join(root, "build", "lib");
 
-export const outputPath = path.join(root, "build", "lib");
-export const entryPath = path.join(root, "lib");
-export const manifestPath = path.join(root, "build", "lib.manifest.json");
-
-export const vendor = ["react", "react-dom", "react-router-dom"];
-
-export const libDLLReference = () =>
-  new webpack.DllReferencePlugin({
-    manifest: manifestPath,
-  });
+const lib = (...args) => path.join(root, "src", "lib", ...args);
 
 export default makeConfig({
   entry: {
-    lib: [entryPath].concat(vendor),
+    lib: [
+      lib("polyfill"),
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "graphql-tag",
+      "react-apollo",
+      "@material-ui/core",
+      "react-resize-observer",
+      "prop-types",
+      "classnames",
+      "react-spring",
+      "fbjs",
+    ],
   },
 
   output: {
@@ -30,9 +35,9 @@ export default makeConfig({
 
   plugins: [
     new CleanPlugin(outputPath, { root }),
-    new webpack.DLLPlugin({
+    new webpack.DllPlugin({
       name: "lib",
-      outputPath: manifestPath,
+      path: path.join(root, "build", "lib.manifest.json"),
     }),
   ],
 });

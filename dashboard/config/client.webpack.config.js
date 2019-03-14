@@ -1,25 +1,27 @@
 import fs from "fs";
 import path from "path";
+import webpack from "webpack";
 
 import CleanPlugin from "clean-webpack-plugin";
 
 import makeConfig from "./base.webpack.config";
 
-import { libDLLReference } from "./lib.webpack.config";
-
 const root = fs.realpathSync(process.cwd());
-
-export const outputPath = path.join(root, "build", "lib");
-export const entryPath = path.join(root, "src");
+const outputPath = path.join(root, "build", "client");
 
 export default makeConfig({
   entry: {
-    lib: [path.join(root, "lib")],
+    src: [path.join(root, "src", "client")],
   },
 
   output: {
     path: outputPath,
   },
 
-  plugins: [new CleanPlugin(outputPath, { root }), libDLLReference()],
+  plugins: [
+    new CleanPlugin(outputPath, { root }),
+    new webpack.DllReferencePlugin({
+      manifest: path.join(root, "build", "lib.manifest.json"),
+    }),
+  ],
 });

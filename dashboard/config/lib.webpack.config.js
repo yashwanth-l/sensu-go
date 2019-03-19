@@ -7,37 +7,33 @@ import CleanPlugin from "clean-webpack-plugin";
 import makeConfig from "./base.webpack.config";
 
 const root = fs.realpathSync(process.cwd());
-const outputPath = path.join(root, "build", "lib");
+const outputPath = path.join(root, "build/lib");
 
-const lib = (...args) => path.join(root, "src", "lib", ...args);
+const libConfig = makeConfig({
+  name: "lib",
 
-export default makeConfig({
   entry: {
-    lib: [
-      lib("polyfill"),
-      "react",
-      "react-dom",
-      "react-router-dom",
-      "graphql-tag",
-      "react-apollo",
-      "@material-ui/core",
-      "react-resize-observer",
-      "prop-types",
-      "classnames",
-      "react-spring",
-      "fbjs",
-    ],
+    lib: [path.join(root, "src/lib")],
   },
 
   output: {
     path: path.join(outputPath, "public"),
+    publicPath: "/",
   },
 
   plugins: [
     new CleanPlugin(outputPath, { root }),
-    new webpack.DllPlugin({
-      name: "lib",
-      path: path.join(outputPath, "dll.json"),
+    new webpack.DllReferencePlugin({
+      manifest: path.join(root, "build/vendor/dll.json"),
     }),
   ],
 });
+
+libConfig.plugins.push(
+  new webpack.DllPlugin({
+    name: libConfig.output.library,
+    path: path.join(outputPath, "dll.json"),
+  }),
+);
+
+export default libConfig;

@@ -16,7 +16,7 @@ import Typography from "@material-ui/core/Typography";
 
 import uniqueId from "/lib/util/uniqueId";
 import Timer from "/lib/component/util/Timer";
-import CircularProgress from "/lib/component/CircularProgress";
+import CircularProgress from "/lib/component/base/CircularProgress";
 
 const icons = {
   success: CheckCircleIcon,

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 import NamespaceLink from "/lib/component/util/NamespaceLink";
-import InlineLink from "/lib/component/InlineLink";
+import InlineLink from "/lib/component/base/InlineLink";
 
 import Toast from "./Toast";
 import ToastConnector from "./ToastConnector";

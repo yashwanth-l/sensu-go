@@ -1,1 +1,1 @@
-schemaPath: "./src/lib/schema/combined.graphql"
+schemaPath: "./src/schema/combined.graphql"

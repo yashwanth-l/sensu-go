@@ -3,52 +3,59 @@ import path from "path";
 import webpack from "webpack";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
+import { StatsWriterPlugin } from "webpack-stats-plugin";
 
 const root = fs.realpathSync(process.cwd());
 
-const isDevMode = mode => mode === "development";
-
 export default ({
-  mode = process.env.NODE_ENV,
-
   // Include a hash of each file's content in its name unless running a
   // development build. This ensures browser caches are automatically invalided
   // by newer asset versions. We avoid using [hash] here since it represents
   // a hash of the entire build, and not of each individual file. Using it would
   // cause a update to any file in the build to change the name of all files,
   // even ones that that didn't change from the previous build.
-  contentHashName = isDevMode(mode) ? "[name]" : "[name]_[contenthash:4]",
-  chunkHashName = isDevMode(mode) ? "[name]" : "[name]_[chunkhash:4]",
+  contentHashName = process.env.NODE_ENV === "development"
+    ? "[name]"
+    : "[name]_[contenthash:4]",
+  chunkHashName = process.env.NODE_ENV === "development"
+    ? "[name]"
+    : "[name]_[chunkhash:4]",
 
   // file-loader calculates hashes differently from the rest of webpack
   // [hash] in file loader is equivalent to [contenthash] elsewhere
   // see: https://github.com/webpack-contrib/file-loader#placeholders
-  fileLoaderHashName = isDevMode(mode) ? "[name]" : "[name]_[hash:4]",
+  fileLoaderHashName = process.env.NODE_ENV === "development"
+    ? "[name]"
+    : "[name]_[hash:4]",
 
   context,
   entry,
   output,
+  devServer,
   plugins,
   module: { rules = [], ...module } = {},
   target = "web",
+  name,
   ...config
 }) => ({
+  name,
   context: root,
   bail: true,
   target,
-  mode,
+  mode: process.env.NODE_ENV,
   entry,
 
   // Emit source maps in production builds that include only the line and
   // filename mapping. This reduces the source map file size considerably and
   // preserves the obfuscation of the original source.
-  devtool: isDevMode(mode) ? "eval" : "nosources-source-map",
+  devtool:
+    process.env.NODE_ENV === "development" ? "eval" : "nosources-source-map",
 
   output: {
     filename: `${contentHashName}.js`,
     chunkFilename: `${chunkHashName}.js`,
     library: chunkHashName,
-    pathinfo: isDevMode(mode),
+    pathinfo: process.env.NODE_ENV === "development",
     ...output,
   },
 
@@ -113,6 +120,8 @@ export default ({
                   filename: `${fileLoaderHashName}.[ext]`,
                 },
               },
+              // Value-loader is the source of any Tapable deprecation
+              // warnings.
               require.resolve("value-loader"),
             ],
           },
@@ -121,7 +130,7 @@ export default ({
             exclude: path.resolve(root, "node_modules"),
             loader: require.resolve("babel-loader"),
             options: {
-              cacheDirectory: mode === "development",
+              cacheDirectory: process.env.NODE_ENV === "development",
             },
           },
           {
@@ -146,6 +155,33 @@ export default ({
   },
 
   plugins: [
+    new StatsWriterPlugin({
+      filename: "../stats.json",
+      fields: null,
+      transform(stats) {
+        return JSON.stringify(
+          {
+            version: stats.version,
+            hash: stats.hash,
+            outputPath: path.relative(root, stats.outputPath),
+            assetsByChunkName: stats.assetsByChunkName,
+            assets: stats.assets,
+            chunks: stats.chunks.map(chunk => ({
+              id: chunk.id,
+              rendered: chunk.rendered,
+              initial: chunk.initial,
+              entry: chunk.entry,
+              size: chunk.size,
+              names: chunk.names,
+              files: chunk.files,
+              hash: chunk.hash,
+            })),
+          },
+          null,
+          2,
+        );
+      },
+    }),
     new webpack.ProvidePlugin({
       // Alias any reference to global Promise object to bluebird.
       Promise: require.resolve("bluebird/js/browser/bluebird.core.js"),
@@ -154,13 +190,13 @@ export default ({
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ]
     .concat(
-      !isDevMode(mode) && [
+      process.env.NODE_ENV !== "development" && [
         // Use hashed module ids in production builds.
         new webpack.HashedModuleIdsPlugin(),
       ],
     )
     .concat(
-      isDevMode(mode) && [
+      process.env.NODE_ENV === "development" && [
         new CaseSensitivePathsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
       ],

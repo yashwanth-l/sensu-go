@@ -10,8 +10,8 @@ import { printSchema, buildASTSchema, extendSchema, parse } from "graphql";
 import chalk from "chalk";
 
 const serverSchemaPath = resolve("../backend/apid/graphql/schema/*.graphql");
-const clientSchemaPath = resolve("src/lib/schema/client.graphql");
-const combinedFilePath = resolve("src/lib/schema/combined.graphql");
+const clientSchemaPath = resolve("src/schema/client.graphql");
+const combinedFilePath = resolve("src/schema/combined.graphql");
 
 // Support legacy SDL spec; graphl-go support pending.
 // https://github.com/graphql/graphql-js/blob/v0.13.0/src/language/parser.js#L89-L97

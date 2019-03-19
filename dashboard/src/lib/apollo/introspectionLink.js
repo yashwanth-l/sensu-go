@@ -1,6 +1,6 @@
 import { ApolloLink, Observable } from "apollo-link";
 
-import asset from "./schema/combinedIntrospection";
+import asset from "/schema/combinedIntrospection.macro";
 
 /**
  * Captures introspection queries sent to client and instead of passing along to

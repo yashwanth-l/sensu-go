@@ -1,1 +1,1 @@
-export default from "./buildInfo.macro";
+export { sourceRevision, sourceVersion, sourceURL } from "./buildInfo.macro";

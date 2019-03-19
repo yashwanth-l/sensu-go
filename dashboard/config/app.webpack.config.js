@@ -12,7 +12,8 @@ const root = fs.realpathSync(process.cwd());
 const outputPath = path.join(root, "build/app");
 
 const getBundleAssets = (stats, chunk) =>
-  stats.assetsByChunkName[chunk]
+  []
+    .concat(stats.assetsByChunkName[chunk])
     .filter(name => /\.js$/.test(name))
     .map(name => ({
       filepath: path.join(root, stats.outputPath, name),

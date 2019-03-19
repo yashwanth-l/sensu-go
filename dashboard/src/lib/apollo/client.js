@@ -8,7 +8,7 @@ import {
 import ApolloClient from "apollo-client";
 
 // https://www.apollographql.com/docs/react/advanced/fragments.html#fragment-matcher
-import { data as introspectionQueryResultData } from "./schema/combinedTypes";
+import { data as introspectionQueryResultData } from "/schema/combinedTypes.macro";
 
 import authLink from "./authLink";
 import stateLink from "./stateLink";

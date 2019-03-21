@@ -149,6 +149,7 @@ func httpRouter(d *Dashboardd) *mux.Router {
 }
 
 func assetsHandler() http.Handler {
+	// TODO: Replace
 	fs := dashboard.Assets
 	handler := http.FileServer(fs)
 

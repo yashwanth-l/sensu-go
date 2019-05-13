@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/coreos/etcd/clientv3"
+	"github.com/gogo/protobuf/proto"
 	"github.com/sensu/sensu-go/backend/store"
 
 	corev2 "github.com/sensu/sensu-go/api/core/v2"
@@ -151,6 +152,76 @@ func Get(ctx context.Context, client *clientv3.Client, key string, object interf
 
 // KeyBuilderFn represents a generic key builder function
 type KeyBuilderFn func(context.Context, string) string
+
+// ProtoList retrieves all keys from storage under the provided prefix key, while
+// supporting all namespaces, and deserialize it into objsPtr.
+func ProtoList(ctx context.Context, client *clientv3.Client, keyBuilder KeyBuilderFn, objsPtr interface{}, pred *store.SelectionPredicate) error {
+	// Make sure the interface is a pointer, and that the element at this address
+	// is a slice.
+	v := reflect.ValueOf(objsPtr)
+	if v.Kind() != reflect.Ptr {
+		return fmt.Errorf("expected pointer, but got %v type", v.Type())
+	}
+	if v.Elem().Kind() != reflect.Slice {
+		return fmt.Errorf("expected slice, but got %s", v.Elem().Kind())
+	}
+	v = v.Elem()
+
+	opts := []clientv3.OpOption{
+		clientv3.WithLimit(pred.Limit),
+	}
+
+	keyPrefix := keyBuilder(ctx, "")
+	rangeEnd := clientv3.GetPrefixRangeEnd(keyPrefix)
+	opts = append(opts, clientv3.WithRange(rangeEnd))
+
+	key := keyPrefix
+	if pred.Continue != "" {
+		key = path.Join(keyPrefix, pred.Continue)
+	} else {
+		if !strings.HasSuffix(key, "/") {
+			key += "/"
+		}
+	}
+
+	resp, err := client.Get(ctx, key, opts...)
+	if err != nil {
+		return err
+	}
+
+	for _, kv := range resp.Kvs {
+		// Decode and append the value to v, which must be a slice.
+		obj := reflect.New(v.Type().Elem().Elem()).Interface().(proto.Message)
+		if err := proto.Unmarshal(kv.Value, obj); err != nil {
+			return &store.ErrDecode{Key: key, Err: err}
+		}
+
+		// Initialize the annotations and labels if they are nil
+		objValue := reflect.ValueOf(obj).Elem()
+		if objValue.Kind() == reflect.Ptr {
+			meta := objValue.Elem().FieldByName("ObjectMeta")
+			if meta.CanSet() {
+				if meta.FieldByName("Labels").Len() == 0 && meta.FieldByName("Labels").CanSet() {
+					meta.FieldByName("Labels").Set(reflect.MakeMap(reflect.TypeOf(make(map[string]string))))
+				}
+				if meta.FieldByName("Annotations").Len() == 0 && meta.FieldByName("Annotations").CanSet() {
+					meta.FieldByName("Annotations").Set(reflect.MakeMap(reflect.TypeOf(make(map[string]string))))
+				}
+			}
+		}
+
+		v.Set(reflect.Append(v, reflect.ValueOf(obj)))
+	}
+
+	if pred.Limit != 0 && resp.Count > pred.Limit {
+		lastObject := v.Index(v.Len() - 1).Interface().(corev2.Resource)
+		pred.Continue = ComputeContinueToken(ctx, lastObject)
+	} else {
+		pred.Continue = ""
+	}
+
+	return nil
+}
 
 // List retrieves all keys from storage under the provided prefix key, while
 // supporting all namespaces, and deserialize it into objsPtr.
